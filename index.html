@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Paint Holder Builder</title>
+    <link rel="stylesheet" href="style.css"/>
+    <style>
+      /* Part selector */
+      .part-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        justify-content: center;
+      }
+      .part-btn {
+        padding: 0.3rem 0.7rem;
+        font-size: 0.78rem;
+        font-weight: bold;
+        border: 1.5px solid #aaa;
+        border-radius: 12px;
+        background: #fff;
+        cursor: pointer;
+        color: #444;
+        transition: all 0.15s;
+      }
+      .part-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+      .part-btn.active { background: #00a2ff; border-color: #00a2ff; color: #fff; }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three":        "https://unpkg.com/three@0.157.0/build/three.module.js",
+          "orbitcontrols":"https://unpkg.com/three@0.157.0/examples/jsm/controls/OrbitControls.js",
+          "measurements": "./js/measurements.js",
+          "frontpart":    "./js/frontpart.js",
+          "sidepart":     "./js/sidepart.js",
+          "toppart":      "./js/toppart.js",
+          "whole":        "./js/whole.js"
+        }
+      }
+    </script>
+    <script src="./js/canvas2svg.js"></script>
+  </head>
+  <body>
+      <main class="container">
+
+      <div class="form-container flex-item">
+        <div class="title-row">
+          <h2 class="form-title">Paint Holder</h2>
+          <div class="switch">
+            <input type="checkbox" name="type" id="type" class="type-checkbox" hidden/>
+            <label for="type" class="switch-label"> </label>
+          </div>
+        </div>
+
+        <!-- Part selector -->
+        <div>
+          <p style="font-size:.8rem;color:#666;margin-bottom:.4rem;text-align:center;">View parts (multi-select):</p>
+          <div class="part-selector">
+            <button class="part-btn active" data-part="front"  onclick="showPart('front')">Front</button>
+            <button class="part-btn"        data-part="middle" onclick="showPart('middle')">Middle</button>
+            <button class="part-btn"        data-part="back"   onclick="showPart('back')">Back</button>
+            <button class="part-btn"        data-part="left"   onclick="showPart('left')">Left</button>
+            <button class="part-btn"        data-part="right"  onclick="showPart('right')">Right</button>
+            <button class="part-btn"        data-part="top"    onclick="showPart('top')">Top</button>
+            <button class="part-btn"        data-part="bottom" onclick="showPart('bottom')">Bottom</button>
+            <button class="part-btn"        data-part="all"    onclick="showPart('all')">All</button>
+          </div>
+        </div>
+
+        <form class="form">
+          <div class="field-container">
+            <label for="hd">Hole Diameter<span class="units">(in)</span></label>
+            <input type="number" id="hd" class="input-field" value="2.65" step="0.05" min="0.5"/>
+          </div>
+          <div class="field-container">
+            <label for="sp">Spacing<span class="units">(in)</span></label>
+            <input type="number" id="sp" class="input-field" value="3.15" step="0.05" min="0.5"/>
+          </div>
+          <div class="field-container">
+            <label for="hor">Columns</label>
+            <input type="number" id="hor" class="input-field" value="5" step="1" min="1" max="20"/>
+          </div>
+          <div class="field-container">
+            <label for="vert">Rows</label>
+            <input type="number" id="vert" class="input-field" value="3" step="1" min="1" max="12"/>
+          </div>
+          <div class="field-container">
+            <label for="d">Depth<span class="units">(in)</span></label>
+            <input type="number" id="d" class="input-field" value="5.5" step="0.25" min="1"/>
+          </div>
+          <div class="field-container">
+            <label for="mt">Material Thickness<span class="units">(in)</span></label>
+            <input type="number" id="mt" class="input-field" value="0.2" step="0.05" min="0.05"/>
+          </div>
+
+          <p class="error-msg" id="error-msg" style="display:none"></p>
+          <button type="submit" class="submit-button">Download SVG</button>
+        </form>
+
+        <section class="preset-section" aria-label="Common paint sizes">
+          <div class="preset-head">
+            <h3>Common Paint Sizes</h3>
+            <p>Select a product to auto-fill hole size and suggested spacing.</p>
+          </div>
+          <div class="preset-layout">
+            <div class="preset-list" id="preset-list" aria-label="Common acrylic paint product gallery"></div>
+            <a class="preset-preview" id="preset-preview" href="#" target="_blank" rel="noopener noreferrer sponsored">
+              <img id="preset-preview-image" alt="Selected product preview"/>
+              <div class="preset-preview-copy">
+                <strong id="preset-preview-name">Select a product</strong>
+                <span id="preset-preview-meta">Hole and spacing details will appear here.</span>
+                <span class="preset-preview-cta">Open product page</span>
+              </div>
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <div class="canvas-container flex-item">
+        <div class="canvas-tabs" role="tablist" aria-label="Preview and chat tabs">
+          <button type="button" class="canvas-tab active" id="tab-preview" data-tab="preview" role="tab" aria-selected="true" aria-controls="panel-preview">Preview</button>
+          <button type="button" class="canvas-tab" id="tab-chat" data-tab="chat" role="tab" aria-selected="false" aria-controls="panel-chat">Chat</button>
+        </div>
+        <div class="canvas-panel active" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview">
+        <div class="affiliate-strip affiliate-strip-top" aria-label="Sponsored affiliate links">
+          <div class="affiliate-track" id="affiliate-track-top"></div>
+        </div>
+        <canvas id="main-canvas" class="canvas"></canvas>
+        <div class="affiliate-strip affiliate-strip-bottom" aria-label="Sponsored affiliate links">
+          <div class="affiliate-track" id="affiliate-track-bottom"></div>
+        </div>
+        <p class="affiliate-disclosure">As an Amazon Associate I earn from qualifying purchases.</p>
+        <div class="canvas-hint">Drag to rotate · Scroll to zoom</div>
+        </div>
+        <div class="canvas-panel" id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" aria-hidden="true">
+          <div class="chat-shell">
+            <p class="chat-note">Sign in to comment. Moderation is enabled.</p>
+            <div id="giscus-thread" aria-label="Comments thread"></div>
+          </div>
+        </div>
+      </div>
+      </main>
+    <script type="module" src="./js/script.js"></script>
+  </body>
+</html>
