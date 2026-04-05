@@ -548,7 +548,7 @@ canvasTabs.forEach(btn => {
 
 if (shareTrigger && sharePanel) {
   buildShareLinks();
-  setSharePanelOpen(true);
+  setSharePanelOpen(false);
 
   shareTrigger.addEventListener('click', async () => {
     const didShare = await shareNativelyIfAvailable();

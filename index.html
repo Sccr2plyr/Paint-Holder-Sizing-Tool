@@ -134,12 +134,16 @@
           </div>
         </section>
 
-        <section class="share-section" aria-label="Share this site">
-          <div class="share-head">
-            <h3>Share this builder</h3>
-            <p>Send this tool to friends on social media.</p>
-          </div>
-          <button type="button" class="share-trigger" id="share-trigger" aria-expanded="false" aria-controls="share-panel">🚀 Share this tool everywhere</button>
+      </div>
+
+      <div class="canvas-container flex-item">
+        <div class="canvas-tabs" role="tablist" aria-label="Preview and chat tabs">
+          <button type="button" class="canvas-tab active" id="tab-preview" data-tab="preview" role="tab" aria-selected="true" aria-controls="panel-preview">Preview</button>
+          <button type="button" class="canvas-tab" id="tab-chat" data-tab="chat" role="tab" aria-selected="false" aria-controls="panel-chat">Chat</button>
+        </div>
+        <div class="canvas-panel active" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview">
+        <section class="share-section share-section-canvas" aria-label="Share this site">
+          <button type="button" class="share-trigger" id="share-trigger" aria-expanded="false" aria-controls="share-panel">🚀 Share this tool</button>
           <div class="share-panel" id="share-panel" hidden>
             <a class="share-chip" id="share-facebook" href="#" target="_blank" rel="noopener noreferrer">Facebook</a>
             <a class="share-chip" id="share-pinterest" href="#" target="_blank" rel="noopener noreferrer">Pinterest</a>
@@ -151,14 +155,6 @@
           </div>
           <p class="share-feedback" id="share-feedback" aria-live="polite"></p>
         </section>
-      </div>
-
-      <div class="canvas-container flex-item">
-        <div class="canvas-tabs" role="tablist" aria-label="Preview and chat tabs">
-          <button type="button" class="canvas-tab active" id="tab-preview" data-tab="preview" role="tab" aria-selected="true" aria-controls="panel-preview">Preview</button>
-          <button type="button" class="canvas-tab" id="tab-chat" data-tab="chat" role="tab" aria-selected="false" aria-controls="panel-chat">Chat</button>
-        </div>
-        <div class="canvas-panel active" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview">
         <div class="affiliate-strip affiliate-strip-top" aria-label="Sponsored affiliate links">
           <div class="affiliate-track" id="affiliate-track-top"></div>
         </div>
