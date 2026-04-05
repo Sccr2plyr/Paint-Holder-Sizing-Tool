@@ -421,7 +421,6 @@ function buildShareLinks(options = {}) {
   const encodedText = encodeURIComponent(text);
   const previewImageUrl = new URL('/preview.png', shareUrl).href;
   const media = encodeURIComponent(previewImageUrl);
-  const encodedPreviewImageUrl = encodeURIComponent(previewImageUrl);
 
   if (shareFacebook) {
     shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
@@ -436,7 +435,7 @@ function buildShareLinks(options = {}) {
     shareLinkedIn.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
   }
   if (shareReddit) {
-    shareReddit.href = `https://www.reddit.com/submit?url=${encodedPreviewImageUrl}&title=${encodedText}`;
+    shareReddit.href = `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedText}`;
   }
 }
 
