@@ -419,7 +419,7 @@ function buildShareLinks(options = {}) {
   shareUrl.searchParams.set('share_preview', 'v4');
   const encodedUrl = encodeURIComponent(shareUrl.href);
   const encodedText = encodeURIComponent(text);
-  const media = encodeURIComponent(`https://image.thum.io/get/width/1200/noanimate/${shareUrl.href}`);
+  const media = encodeURIComponent(new URL('/preview.png', shareUrl).href);
 
   if (shareFacebook) {
     shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
