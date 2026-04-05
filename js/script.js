@@ -416,7 +416,7 @@ function setShareFeedback(message) {
 function buildShareLinks(options = {}) {
   const { url, text } = getSharePayload(options);
   const shareUrl = new URL(url);
-  shareUrl.searchParams.set('share_preview', 'v3');
+  shareUrl.searchParams.set('share_preview', 'v4');
   const encodedUrl = encodeURIComponent(shareUrl.href);
   const encodedText = encodeURIComponent(text);
   const media = encodeURIComponent(`https://image.thum.io/get/width/1200/noanimate/${shareUrl.href}`);
