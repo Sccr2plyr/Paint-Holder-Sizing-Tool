@@ -144,6 +144,18 @@ function productPlaceholder(label, bg, fg) {
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
+const presetImageFallback = productPlaceholder('Paint', '#6a6a6a', '#ffffff');
+
+function getSitePreviewImage(url) {
+  const cleanUrl = (url || '').trim();
+  if (!cleanUrl) return presetImageFallback;
+  return `https://image.thum.io/get/width/1200/noanimate/${encodeURI(cleanUrl)}`;
+}
+
+function getPresetImage(preset) {
+  return (preset.image || '').trim() || getSitePreviewImage(preset.affiliateUrl);
+}
+
 const productPresets = [
   {
     id: 'apple-barrel-2oz',
@@ -155,7 +167,7 @@ const productPresets = [
     vert: 4,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4151r5m',
-    image: productPlaceholder('Apple Barrel 2 oz', '#2f4d67', '#ffffff')
+    image: ''
   },
   {
     id: 'folkart-2oz',
@@ -167,7 +179,7 @@ const productPresets = [
     vert: 4,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4uWijsx',
-    image: productPlaceholder('FolkArt 2 oz', '#5f4a30', '#ffffff')
+    image: ''
   },
   {
     id: 'americana-2oz',
@@ -179,7 +191,7 @@ const productPresets = [
     vert: 4,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4v3FBwA',
-    image: productPlaceholder('Americana 2 oz', '#3a5f3b', '#ffffff')
+    image: ''
   },
   {
     id: 'pouring-8oz',
@@ -191,7 +203,7 @@ const productPresets = [
     vert: 3,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4v3xC2y',
-    image: productPlaceholder('Pouring Paint 8 oz', '#5a3c60', '#ffffff')
+    image: ''
   },
   {
     id: 'craft-smart-2oz',
@@ -203,7 +215,7 @@ const productPresets = [
     vert: 4,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4cfeh7k',
-    image: productPlaceholder('Craft Smart 2 oz', '#345a7a', '#ffffff')
+    image: ''
   },
   {
     id: 'rust-oleum-334020',
@@ -215,7 +227,7 @@ const productPresets = [
     vert: 3,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4dTIc68',
-    image: productPlaceholder('Rust-Oleum 334020', '#345a7a', '#ffffff')
+    image: ''
   }  
 ];
 
@@ -234,7 +246,11 @@ function updatePresetPreview(preset) {
   const hasLink = Boolean((preset.affiliateUrl || '').trim());
   previewLink.href = hasLink ? preset.affiliateUrl : '#';
   previewLink.classList.toggle('disabled', !hasLink);
-  previewImg.src = preset.image;
+  previewImg.src = getPresetImage(preset);
+  previewImg.onerror = () => {
+    previewImg.onerror = null;
+    previewImg.src = presetImageFallback;
+  };
   previewName.textContent = preset.name;
   const base = `Hole ${formatPresetDimension(preset.holeDiameterIn)} · Spacing ${formatPresetDimension(preset.spacingIn)} · Depth ${formatPresetDimension(preset.depthIn)}`;
   previewMeta.textContent = hasLink ? base : `${base} · Affiliate link pending`;
@@ -261,7 +277,15 @@ function renderPresetList() {
     button.className = 'preset-item';
     if (preset.id === selectedPresetId) button.classList.add('active');
     button.setAttribute('aria-label', `${preset.name} preset`);
-    button.innerHTML = `<img src="${preset.image}" alt="${preset.name}"/><div class="preset-item-copy"><strong>${preset.name}</strong><span>Hole ${formatPresetDimension(preset.holeDiameterIn)}</span></div>`;
+    const src = getPresetImage(preset);
+    button.innerHTML = `<img src="${src}" alt="${preset.name}"/><div class="preset-item-copy"><strong>${preset.name}</strong><span>Hole ${formatPresetDimension(preset.holeDiameterIn)}</span></div>`;
+    const img = button.querySelector('img');
+    if (img) {
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = presetImageFallback;
+      };
+    }
     button.addEventListener('click', () => applyPreset(preset));
     presetList.appendChild(button);
   });
