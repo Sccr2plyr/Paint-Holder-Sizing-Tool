@@ -126,8 +126,7 @@ const shareLinkedIn = document.getElementById('share-linkedin');
 const shareReddit = document.getElementById('share-reddit');
 const shareInstagram = document.getElementById('share-instagram');
 const shareCopy = document.getElementById('share-copy');
-const fallbackShareUrl = 'https://paintholdersizingtool.netlify.app/';
-const fallbackShareImage = 'https://paintholdersizingtool.netlify.app/acrylic.jpg';
+const configuredPublicUrl = (document.querySelector('meta[name="public-site-url"]')?.content || '').trim();
 let   currentUnit = 'in';
 let   selectedPresetId = null;
 let   giscusLoaded = false;
@@ -363,7 +362,7 @@ function loadGiscusIfNeeded() {
 function getSharePayload() {
   const current = new URL(window.location.href);
   const isLocal = ['localhost', '127.0.0.1', '0.0.0.0'].includes(current.hostname);
-  const url = isLocal ? fallbackShareUrl : current.href;
+  const url = isLocal && configuredPublicUrl ? new URL('/', configuredPublicUrl).href : current.href;
   const title = 'Paint Holder Builder';
   const text = 'Build and export a custom paint holder with this free 3D tool.';
   return { url, title, text };
@@ -380,7 +379,7 @@ function buildShareLinks() {
   shareUrl.searchParams.set('share_preview', 'v3');
   const encodedUrl = encodeURIComponent(shareUrl.href);
   const encodedText = encodeURIComponent(text);
-  const media = encodeURIComponent(fallbackShareImage);
+  const media = encodeURIComponent(new URL('/acrylic.jpg', shareUrl).href);
 
   if (shareFacebook) {
     shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
