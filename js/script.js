@@ -386,8 +386,7 @@ function buildShareLinks() {
     shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
   }
   if (sharePinterest) {
-    sharePinterest.href = `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedText}`;
-    sharePinterest.setAttribute('data-pin-media', media);
+    sharePinterest.href = `https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${media}&description=${encodedText}`;
   }
   if (shareX) {
     shareX.href = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`;
