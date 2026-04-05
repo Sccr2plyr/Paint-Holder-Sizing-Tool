@@ -40,7 +40,7 @@ window.addEventListener('resize', () => {
 // ── Holder & state ────────────────────────────────────────────────────────────
 const holder     = new Holder();
 const partNames   = ['front', 'middle', 'back', 'left', 'right', 'top', 'bottom'];
-let   selectedParts = new Set(['front']);
+let   selectedParts = new Set(partNames);
 let   fullGroup   = null;
 
 function fitCamera(object) {
