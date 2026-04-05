@@ -167,6 +167,10 @@ function getPresetImage(preset) {
   return (preset.image || '').trim() || getSitePreviewImage(preset.affiliateUrl);
 }
 
+function getPresetThumbImage(preset) {
+  return (preset.thumb || '').trim() || (preset.image || '').trim() || presetImageFallback;
+}
+
 const productPresets = [
   {
     id: 'apple-barrel-2oz',
@@ -178,7 +182,8 @@ const productPresets = [
     vert: 4,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4151r5m',
-    image: ''
+    image: '',
+    thumb: productPlaceholder('Apple Barrel 2 oz', '#2f4d67', '#ffffff')
   },
   {
     id: 'folkart-2oz',
@@ -190,7 +195,8 @@ const productPresets = [
     vert: 4,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4uWijsx',
-    image: ''
+    image: '',
+    thumb: productPlaceholder('FolkArt 2 oz', '#5f4a30', '#ffffff')
   },
   {
     id: 'americana-2oz',
@@ -202,7 +208,8 @@ const productPresets = [
     vert: 4,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4v3FBwA',
-    image: ''
+    image: '',
+    thumb: productPlaceholder('Americana 2 oz', '#3a5f3b', '#ffffff')
   },
   {
     id: 'pouring-8oz',
@@ -214,7 +221,8 @@ const productPresets = [
     vert: 3,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4v3xC2y',
-    image: ''
+    image: '',
+    thumb: productPlaceholder('Pouring Paint 8 oz', '#5a3c60', '#ffffff')
   },
   {
     id: 'craft-smart-2oz',
@@ -226,7 +234,8 @@ const productPresets = [
     vert: 4,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4cfeh7k',
-    image: ''
+    image: '',
+    thumb: productPlaceholder('Craft Smart 2 oz', '#345a7a', '#ffffff')
   },
   {
     id: 'rust-oleum-334020',
@@ -238,7 +247,8 @@ const productPresets = [
     vert: 3,
     // Add your affiliate link here when ready.
     affiliateUrl: 'https://amzn.to/4dTIc68',
-    image: ''
+    image: '',
+    thumb: productPlaceholder('Rust-Oleum 334020', '#8f2f2f', '#ffffff')
   }  
 ];
 
@@ -288,7 +298,7 @@ function renderPresetList() {
     button.className = 'preset-item';
     if (preset.id === selectedPresetId) button.classList.add('active');
     button.setAttribute('aria-label', `${preset.name} preset`);
-    const src = getPresetImage(preset);
+    const src = getPresetThumbImage(preset);
     button.innerHTML = `<img src="${src}" alt="${preset.name}"/><div class="preset-item-copy"><strong>${preset.name}</strong><span>Hole ${formatPresetDimension(preset.holeDiameterIn)}</span></div>`;
     const img = button.querySelector('img');
     if (img) {
