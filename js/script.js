@@ -116,6 +116,18 @@ const canvasTabs = Array.from(document.querySelectorAll('.canvas-tab'));
 const previewPanel = document.getElementById('panel-preview');
 const chatPanel = document.getElementById('panel-chat');
 const giscusHost = document.getElementById('giscus-thread');
+const shareTrigger = document.getElementById('share-trigger');
+const sharePanel = document.getElementById('share-panel');
+const shareFeedback = document.getElementById('share-feedback');
+const shareFacebook = document.getElementById('share-facebook');
+const sharePinterest = document.getElementById('share-pinterest');
+const shareX = document.getElementById('share-x');
+const shareLinkedIn = document.getElementById('share-linkedin');
+const shareReddit = document.getElementById('share-reddit');
+const shareInstagram = document.getElementById('share-instagram');
+const shareCopy = document.getElementById('share-copy');
+const fallbackShareUrl = 'https://paintholdersizingtool.netlify.app/';
+const fallbackShareImage = 'https://paintholdersizingtool.netlify.app/acrylic.jpg';
 let   currentUnit = 'in';
 let   selectedPresetId = null;
 let   giscusLoaded = false;
@@ -348,6 +360,85 @@ function loadGiscusIfNeeded() {
   giscusLoaded = true;
 }
 
+function getSharePayload() {
+  const current = new URL(window.location.href);
+  const isLocal = ['localhost', '127.0.0.1', '0.0.0.0'].includes(current.hostname);
+  const url = isLocal ? fallbackShareUrl : current.href;
+  const title = 'Paint Holder Builder';
+  const text = 'Build and export a custom paint holder with this free 3D tool.';
+  return { url, title, text };
+}
+
+function setShareFeedback(message) {
+  if (!shareFeedback) return;
+  shareFeedback.textContent = message;
+}
+
+function buildShareLinks() {
+  const { url, text } = getSharePayload();
+  const shareUrl = new URL(url);
+  shareUrl.searchParams.set('share_preview', 'v3');
+  const encodedUrl = encodeURIComponent(shareUrl.href);
+  const encodedText = encodeURIComponent(text);
+  const media = encodeURIComponent(fallbackShareImage);
+
+  if (shareFacebook) {
+    shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+  }
+  if (sharePinterest) {
+    sharePinterest.href = `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedText}`;
+    sharePinterest.setAttribute('data-pin-media', media);
+  }
+  if (shareX) {
+    shareX.href = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`;
+  }
+  if (shareLinkedIn) {
+    shareLinkedIn.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+  }
+  if (shareReddit) {
+    shareReddit.href = `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedText}`;
+  }
+}
+
+async function copyShareUrl(customMessage) {
+  const { url } = getSharePayload();
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(url);
+    } else {
+      const input = document.createElement('textarea');
+      input.value = url;
+      input.setAttribute('readonly', '');
+      input.style.position = 'absolute';
+      input.style.left = '-9999px';
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+    }
+    setShareFeedback(customMessage || 'Link copied.');
+  } catch {
+    setShareFeedback('Could not copy link on this device.');
+  }
+}
+
+async function shareNativelyIfAvailable() {
+  if (!navigator.share) return false;
+  try {
+    await navigator.share(getSharePayload());
+    setShareFeedback('Shared.');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function setSharePanelOpen(isOpen) {
+  if (!sharePanel || !shareTrigger) return;
+  sharePanel.hidden = !isOpen;
+  shareTrigger.setAttribute('aria-expanded', String(isOpen));
+}
+
 function setCanvasTab(tabName) {
   const isChat = tabName === 'chat';
   canvasTabs.forEach(btn => {
@@ -455,6 +546,26 @@ typeCheckbox.addEventListener('change', () => {
 canvasTabs.forEach(btn => {
   btn.addEventListener('click', () => setCanvasTab(btn.dataset.tab));
 });
+
+if (shareTrigger && sharePanel) {
+  buildShareLinks();
+  setSharePanelOpen(true);
+
+  shareTrigger.addEventListener('click', async () => {
+    const didShare = await shareNativelyIfAvailable();
+    if (didShare) return;
+    setSharePanelOpen(sharePanel.hidden);
+  });
+
+  shareCopy?.addEventListener('click', () => copyShareUrl('Link copied.'));
+  shareInstagram?.addEventListener('click', () => copyShareUrl('Link copied. Paste it in Instagram bio/story.'));
+
+  document.addEventListener('click', (event) => {
+    if (!sharePanel.hidden && !sharePanel.contains(event.target) && !shareTrigger.contains(event.target)) {
+      setSharePanelOpen(false);
+    }
+  });
+}
 
 // Part selector buttons — wired from HTML
 window.showPart = showPart;

@@ -226,6 +226,81 @@ body {
   margin-top: 0.12rem;
 }
 
+.share-section {
+  width: 100%;
+  border: 2px solid #00a2ff;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #eef8ff 0%, #f7fcff 100%);
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  box-shadow: 0 6px 18px rgba(0, 110, 170, 0.16);
+  position: sticky;
+  top: 10px;
+  z-index: 4;
+}
+
+.share-head h3 {
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.share-head p {
+  font-size: 0.78rem;
+  color: #585858;
+}
+
+.share-trigger {
+  align-self: stretch;
+  border: none;
+  background: #00a2ff;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border-radius: 999px;
+  padding: 0.6rem 0.82rem;
+  cursor: pointer;
+}
+
+.share-trigger:hover {
+  background: #008edd;
+}
+
+.share-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+}
+
+.share-chip {
+  border: 1px solid #6bc8ff;
+  background: #ffffff;
+  color: #0f3f5e;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: bold;
+  line-height: 1;
+  border-radius: 999px;
+  padding: 0.5rem 0.72rem;
+  cursor: pointer;
+}
+
+button.share-chip {
+  font-family: inherit;
+}
+
+.share-chip:hover {
+  border-color: #00a2ff;
+  color: #005b94;
+}
+
+.share-feedback {
+  min-height: 1rem;
+  font-size: 0.76rem;
+  color: #0b5b86;
+}
+
 .field-container {
   display: flex;
   justify-content: center;
