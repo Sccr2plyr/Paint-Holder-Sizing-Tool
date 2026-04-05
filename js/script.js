@@ -131,6 +131,32 @@ let   currentUnit = 'in';
 let   selectedPresetId = null;
 let   giscusLoaded = false;
 
+function normalizePublicUrl(raw) {
+  const value = (raw || '').trim();
+  if (!value) return '';
+  try {
+    const parsed = new URL(value);
+    if (!['http:', 'https:'].includes(parsed.protocol)) return '';
+    return new URL('/', parsed.href).href;
+  } catch {
+    return '';
+  }
+}
+
+function getPublicSiteUrl() {
+  const fromMeta = normalizePublicUrl(configuredPublicUrl);
+  if (fromMeta) return fromMeta;
+  return normalizePublicUrl(localStorage.getItem('publicSiteUrl') || '');
+}
+
+function ensurePublicSiteUrlForLocal() {
+  return getPublicSiteUrl();
+}
+
+function isLocalHostname(hostname) {
+  return ['localhost', '127.0.0.1', '0.0.0.0'].includes(hostname);
+}
+
 // Configure these with your Giscus repository details.
 const giscusConfig = {
   repo: 'YOUR_GITHUB_USERNAME/YOUR_REPO',
@@ -369,10 +395,14 @@ function loadGiscusIfNeeded() {
   giscusLoaded = true;
 }
 
-function getSharePayload() {
+function getSharePayload(options = {}) {
+  const { promptForLocal = false } = options;
   const current = new URL(window.location.href);
-  const isLocal = ['localhost', '127.0.0.1', '0.0.0.0'].includes(current.hostname);
-  const url = isLocal && configuredPublicUrl ? new URL('/', configuredPublicUrl).href : current.href;
+  const isLocal = isLocalHostname(current.hostname);
+  const localPublicUrl = isLocal
+    ? (promptForLocal ? ensurePublicSiteUrlForLocal() : getPublicSiteUrl())
+    : '';
+  const url = localPublicUrl || current.href;
   const title = 'Paint Holder Builder';
   const text = 'Build and export a custom paint holder with this free 3D tool.';
   return { url, title, text };
@@ -383,13 +413,13 @@ function setShareFeedback(message) {
   shareFeedback.textContent = message;
 }
 
-function buildShareLinks() {
-  const { url, text } = getSharePayload();
+function buildShareLinks(options = {}) {
+  const { url, text } = getSharePayload(options);
   const shareUrl = new URL(url);
   shareUrl.searchParams.set('share_preview', 'v3');
   const encodedUrl = encodeURIComponent(shareUrl.href);
   const encodedText = encodeURIComponent(text);
-  const media = encodeURIComponent(new URL('/acrylic.jpg', shareUrl).href);
+  const media = encodeURIComponent(`https://image.thum.io/get/width/1200/noanimate/${shareUrl.href}`);
 
   if (shareFacebook) {
     shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
@@ -406,6 +436,21 @@ function buildShareLinks() {
   if (shareReddit) {
     shareReddit.href = `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedText}`;
   }
+}
+
+function prepareSocialShareOrBlock(event) {
+  const current = new URL(window.location.href);
+  if (!isLocalHostname(current.hostname)) return true;
+
+  const payload = getSharePayload({ promptForLocal: false });
+  const payloadUrl = new URL(payload.url);
+  if (isLocalHostname(payloadUrl.hostname)) {
+    setShareFeedback('Tip: set meta public-site-url in index.html to your live domain for proper social previews.');
+    return true;
+  }
+
+  buildShareLinks({ promptForLocal: false });
+  return true;
 }
 
 async function copyShareUrl(customMessage) {
@@ -567,6 +612,14 @@ if (shareTrigger && sharePanel) {
 
   shareCopy?.addEventListener('click', () => copyShareUrl('Link copied.'));
   shareInstagram?.addEventListener('click', () => copyShareUrl('Link copied. Paste it in Instagram bio/story.'));
+
+  [shareFacebook, sharePinterest, shareX, shareLinkedIn, shareReddit]
+    .filter(Boolean)
+    .forEach(link => {
+      link.addEventListener('click', (event) => {
+        prepareSocialShareOrBlock(event);
+      });
+    });
 
   document.addEventListener('click', (event) => {
     if (!sharePanel.hidden && !sharePanel.contains(event.target) && !shareTrigger.contains(event.target)) {
