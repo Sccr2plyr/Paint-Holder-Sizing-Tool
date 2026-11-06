@@ -189,8 +189,24 @@ function getSitePreviewImage(url) {
   return `https://image.thum.io/get/width/1200/noanimate/${encodeURI(cleanUrl)}`;
 }
 
+// Product artwork is drawn locally instead of screenshotting Amazon pages:
+// faster, always loads, and Amazon's Associates rules only allow product images
+// that come from Amazon's own tools.
+const presetArtColors = ['#e4572e', '#29a3d6', '#f2b134', '#7cb342', '#9c27b0', '#455a64'];
+
+function productArt(preset) {
+  const index = Math.max(0, productPresets.indexOf(preset));
+  const color = presetArtColors[index % presetArtColors.length];
+  const isSpray = /rust-oleum|spray/i.test(preset.name);
+  const bottle = isSpray
+    ? `<rect x='310' y='38' width='100' height='150' rx='16' fill='${color}'/><rect x='330' y='18' width='60' height='26' rx='6' fill='#333'/><rect x='310' y='92' width='100' height='44' fill='#fff' opacity='.85'/>`
+    : `<rect x='318' y='16' width='84' height='34' rx='8' fill='#333'/><path d='M300 62q0-12 12-12h96q12 0 12 12v118q0 14-14 14h-92q-14 0-14-14z' fill='${color}'/><rect x='300' y='100' width='120' height='48' fill='#fff' opacity='.85'/>`;
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='720' height='220' viewBox='0 0 720 220'><rect width='720' height='220' fill='#f3f3f3'/>${bottle}<text x='360' y='127' text-anchor='middle' font-family='Arial, Helvetica, sans-serif' font-size='22' font-weight='700' fill='#333'>${preset.holeDiameterIn.toFixed(2)} in</text></svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 function getPresetImage(preset) {
-  return (preset.image || '').trim() || getSitePreviewImage(preset.affiliateUrl);
+  return (preset.image || '').trim() || productArt(preset);
 }
 
 function getPresetThumbImage(preset) {
@@ -639,3 +655,9 @@ if (productPresets.length) {
 renderPresetList();
 renderAffiliateStrips();
 setCanvasTab('preview');
+
+// Hide the Chat tab until Giscus is configured, so visitors never see setup text.
+if (!giscusIsConfigured()) {
+  const chatTab = document.getElementById('tab-chat');
+  if (chatTab) chatTab.style.display = 'none';
+}
