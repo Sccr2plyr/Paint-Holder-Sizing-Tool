@@ -4,13 +4,16 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="public-site-url" content="https://paint-holder-sizing-tool.pages.dev/"/>
-    <title>Paint Holder Builder</title>
-    <meta name="description" content="Build a custom paint holder with live 3D preview and SVG export."/>
+    <title>Paint Holder Generator – Free Laser Cut Paint Rack SVG</title>
+    <meta name="description" content="Free paint rack generator for laser cutters and CNC. Pick your craft paint bottle (Apple Barrel, FolkArt, Americana and more), set rows and columns, preview in 3D, and download a cut-ready SVG."/>
+    <meta name="robots" content="index, follow, max-image-preview:large"/>
+    <meta name="theme-color" content="#00a2ff"/>
+    <meta name="google-site-verification" content="bHwNNOIN9YBKF51g1H71tuniOHmLc3S4oCEis_eJQTk"/>
     <link rel="canonical" href="https://paint-holder-sizing-tool.pages.dev/"/>
     <meta property="og:url" content="https://paint-holder-sizing-tool.pages.dev/"/>
     <meta property="og:site_name" content="Paint Holder Builder"/>
-    <meta property="og:title" content="Paint Holder Builder"/>
-    <meta property="og:description" content="Build a custom paint holder with live 3D preview and SVG export."/>
+    <meta property="og:title" content="Free Laser Cut Paint Rack Generator"/>
+    <meta property="og:description" content="Pick your paint bottle, set rows and columns, preview in 3D, and download a cut-ready SVG for your laser cutter or CNC."/>
     <meta property="og:type" content="website"/>
     <meta property="og:image" content="https://paint-holder-sizing-tool.pages.dev/preview.png"/>
     <meta property="og:image:secure_url" content="https://paint-holder-sizing-tool.pages.dev/preview.png"/>
@@ -18,10 +21,81 @@
     <meta property="og:image:width" content="1200"/>
     <meta property="og:image:height" content="630"/>
     <meta name="twitter:card" content="summary_large_image"/>
-    <meta name="twitter:title" content="Paint Holder Builder"/>
-    <meta name="twitter:description" content="Build a custom paint holder with live 3D preview and SVG export."/>
+    <meta name="twitter:title" content="Free Laser Cut Paint Rack Generator"/>
+    <meta name="twitter:description" content="Pick your paint bottle, set rows and columns, preview in 3D, and download a cut-ready SVG for your laser cutter or CNC."/>
     <meta name="twitter:image" content="https://paint-holder-sizing-tool.pages.dev/preview.png"/>
     <link rel="icon" type="image/jpeg" href="/acrylic.jpg"/>
+    <!-- ===== Speed: start fetching the 3D library early ===== -->
+    <link rel="preconnect" href="https://unpkg.com" crossorigin/>
+    <link rel="modulepreload" href="https://unpkg.com/three@0.157.0/build/three.module.js"/>
+
+    <!-- ===== Google Analytics 4 (free) =====
+         1. Replace G-XXXXXXXXXX (twice) with your GA4 Measurement ID.
+         2. Delete the two comment lines marked REMOVE to switch tracking on.
+         Events you'll see in GA4: "svg_download", "affiliate_click" (which product),
+         "preset_select" (which paint size people pick) and "share" (which network). -->
+    <!-- REMOVE THIS LINE
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    REMOVE THIS LINE -->
+
+    <!-- ===== Structured data for Google ===== -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Paint Holder Generator",
+        "url": "https://paint-holder-sizing-tool.pages.dev/",
+        "description": "Free online generator that creates laser-cut and CNC-ready SVG plans for craft paint bottle racks, with presets for common acrylic paint bottle sizes.",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "Any (runs in the browser)",
+        "browserRequirements": "Requires a browser with WebGL",
+        "isAccessibleForFree": true,
+        "image": "https://paint-holder-sizing-tool.pages.dev/og-image.png",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "featureList": [
+          "Presets for 2 oz craft paint, 8 oz pouring paint and spray cans",
+          "Custom hole diameter, spacing, rows, columns, depth and material thickness",
+          "Inches or millimeters",
+          "Live 3D preview of every panel",
+          "SVG download for laser cutters and CNC routers"
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is the paint holder generator free?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. There is no sign-up and no cost. Set your sizes and download the SVG." }
+          },
+          {
+            "@type": "Question",
+            "name": "What hole size do I need for 2 oz craft paint bottles?",
+            "acceptedAnswer": { "@type": "Answer", "text": "The presets use about 1.35 in (34 mm) holes with 1.75 in spacing for 2 oz bottles like Apple Barrel, FolkArt and DecoArt Americana. Bottles vary slightly, so measure yours with calipers and adjust if needed." }
+          },
+          {
+            "@type": "Question",
+            "name": "What software can open the SVG file?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Any program that imports SVG, including LightBurn, Inkscape, Glowforge, xTool Creative Space, LaserGRBL, Adobe Illustrator and most CNC CAM software. The file is saved at real-world size in millimeters." }
+          },
+          {
+            "@type": "Question",
+            "name": "What material thickness should I enter?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Measure your actual sheet and enter that number. Plywood sold as 3 mm or 1/4 inch is often thinner than its label, and the tabs and slots need to match the real thickness to fit." }
+          }
+        ]
+      }
+    </script>
+
     <link rel="stylesheet" href="style.css"/>
     <style>
       /* Part selector */
@@ -65,12 +139,16 @@
 
       <div class="form-container flex-item">
         <div class="title-row">
-          <h2 class="form-title">Paint Holder</h2>
+          <h1 class="form-title">Paint Holder</h1>
           <div class="switch">
             <input type="checkbox" name="type" id="type" class="type-checkbox" hidden/>
-            <label for="type" class="switch-label"> </label>
+            <label for="type" class="switch-label" aria-label="Switch units between inches and millimeters" title="Switch units: inches / mm"> </label>
           </div>
         </div>
+        <p class="site-tagline">
+          Free laser cut paint rack generator. Pick your bottle size, preview in
+          3D, and download a cut-ready SVG.
+        </p>
 
         <!-- Part selector -->
         <div>
@@ -87,7 +165,7 @@
           </div>
         </div>
 
-        <form class="form">
+        <form class="form" novalidate>
           <div class="field-container">
             <label for="hd">Hole Diameter<span class="units">(in)</span></label>
             <input type="number" id="hd" class="input-field" value="2.65" step="0.05" min="0.5"/>
@@ -119,7 +197,7 @@
 
         <section class="preset-section" aria-label="Common paint sizes">
           <div class="preset-head">
-            <h3>Common Paint Sizes</h3>
+            <h2>Common Paint Sizes</h2>
             <p>Select a product to auto-fill hole size and suggested spacing.</p>
           </div>
           <div class="preset-layout">
@@ -135,6 +213,7 @@
           </div>
         </section>
 
+        <a class="learn-more" href="#how-it-works">How it works, sizes &amp; tips ↓</a>
       </div>
 
       <div class="canvas-container flex-item">
@@ -159,7 +238,7 @@
         <div class="affiliate-strip affiliate-strip-top" aria-label="Sponsored affiliate links">
           <div class="affiliate-track" id="affiliate-track-top"></div>
         </div>
-        <canvas id="main-canvas" class="canvas"></canvas>
+        <canvas id="main-canvas" class="canvas" role="img" aria-label="Interactive 3D preview of your paint holder. Drag to rotate, scroll to zoom."></canvas>
         <div class="affiliate-strip affiliate-strip-bottom" aria-label="Sponsored affiliate links">
           <div class="affiliate-track" id="affiliate-track-bottom"></div>
         </div>
@@ -174,6 +253,143 @@
         </div>
       </div>
       </main>
+
+    <article class="info" id="how-it-works">
+      <section>
+        <h2>Build a custom paint rack on your laser cutter</h2>
+        <p>
+          This generator makes the flat cut pattern for a tabbed paint bottle
+          holder sized to your exact bottles: a front and middle panel with
+          matching holes, plus a back, two sides, a top and a bottom that all
+          slot together. Choose how many rows and columns you want, set your
+          material thickness, and download one SVG with every part. It runs in
+          your browser with no sign-up.
+        </p>
+      </section>
+
+      <section>
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li><strong>Pick a paint size.</strong> Click a preset under Common Paint Sizes, or enter your own hole diameter and spacing. Use the IN / MM switch for metric.</li>
+          <li><strong>Set the layout.</strong> Choose columns, rows and depth, then enter the real thickness of your sheet.</li>
+          <li><strong>Check the 3D preview.</strong> Use the part buttons to view each panel or the whole rack. Drag to rotate and scroll to zoom.</li>
+          <li><strong>Download and cut.</strong> The SVG is saved at real-world size in millimeters. Open it in your laser or CNC software, cut, and slot the panels together.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Hole sizes for popular paints</h2>
+        <div class="table-wrap">
+          <table class="sizes">
+            <thead>
+              <tr><th>Paint</th><th>Hole</th><th>Spacing</th><th>Depth</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Apple Barrel Acrylic (2 oz)</td><td>1.35 in / 34.3 mm</td><td>1.75 in</td><td>3.2 in</td></tr>
+              <tr><td>FolkArt Acrylic (2 oz)</td><td>1.35 in / 34.3 mm</td><td>1.75 in</td><td>3.2 in</td></tr>
+              <tr><td>DecoArt Americana (2 oz)</td><td>1.36 in / 34.5 mm</td><td>1.78 in</td><td>3.3 in</td></tr>
+              <tr><td>Craft Smart Acrylic (2 oz)</td><td>1.34 in / 34.0 mm</td><td>1.72 in</td><td>3.2 in</td></tr>
+              <tr><td>Pouring paint bottle (8 oz)</td><td>2.35 in / 59.7 mm</td><td>2.85 in</td><td>4.6 in</td></tr>
+              <tr><td>Rust-Oleum Painter's Touch spray can</td><td>2.65 in / 67.3 mm</td><td>3.00 in</td><td>6.0 in</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">Bottles vary between batches. Measure yours with calipers and add a little clearance if the fit is tight.</p>
+      </section>
+
+      <section>
+        <h2>Cutting tips</h2>
+        <ul class="tips">
+          <li><strong>Measure your material.</strong> "3 mm" or "1/4 inch" plywood is rarely exactly that. Enter what your calipers say so the tabs fit.</li>
+          <li><strong>Test one hole first.</strong> Cut a single hole in scrap and try a bottle before cutting the full panel.</li>
+          <li><strong>Mind the kerf.</strong> If tabs are loose, reduce the thickness value slightly. If they are too tight, increase it.</li>
+          <li><strong>Good materials:</strong> Baltic birch plywood, MDF and acrylic all work well.</li>
+        </ul>
+      </section>
+
+      <section id="materials">
+        <h2>Materials &amp; tools for building your rack</h2>
+        <ul class="products">
+          <li>
+            <a class="aff" data-product="baltic_birch_plywood" href="https://www.amazon.com/s?k=baltic+birch+plywood+sheets+laser&amp;tag=threetoedbear-20" target="_blank" rel="sponsored noopener">Baltic birch plywood sheets</a>
+            <span>Strong, flat and laser-friendly. The go-to for paint racks.</span>
+          </li>
+          <li>
+            <a class="aff" data-product="mdf_sheets" href="https://www.amazon.com/s?k=mdf+sheets+for+laser+cutting&amp;tag=threetoedbear-20" target="_blank" rel="sponsored noopener">MDF sheets</a>
+            <span>Cheap and consistent. Great for a first test rack.</span>
+          </li>
+          <li>
+            <a class="aff" data-product="acrylic_sheets" href="https://www.amazon.com/s?k=cast+acrylic+sheet+laser+cutting&amp;tag=threetoedbear-20" target="_blank" rel="sponsored noopener">Cast acrylic sheets</a>
+            <span>For a clear or colored rack that shows off your paints.</span>
+          </li>
+          <li>
+            <a class="aff" data-product="digital_calipers" href="https://www.amazon.com/s?k=digital+calipers&amp;tag=threetoedbear-20" target="_blank" rel="sponsored noopener">Digital calipers</a>
+            <span>Measure bottle diameter and sheet thickness accurately.</span>
+          </li>
+          <li>
+            <a class="aff" data-product="wood_glue" href="https://www.amazon.com/s?k=titebond+wood+glue&amp;tag=threetoedbear-20" target="_blank" rel="sponsored noopener">Wood glue</a>
+            <span>A few drops in the slots makes the rack permanent.</span>
+          </li>
+          <li>
+            <a class="aff" data-product="masking_tape" href="https://www.amazon.com/s?k=laser+transfer+masking+tape&amp;tag=threetoedbear-20" target="_blank" rel="sponsored noopener">Laser masking tape</a>
+            <span>Prevents scorch marks around the holes.</span>
+          </li>
+        </ul>
+        <p class="disclosure">As an Amazon Associate I earn from qualifying purchases. It costs you nothing extra and keeps this tool free.</p>
+      </section>
+
+      <section>
+        <h2>Frequently asked questions</h2>
+        <details>
+          <summary>Is the paint holder generator free?</summary>
+          <p>Yes. There is no sign-up and no cost. Set your sizes and download the SVG.</p>
+        </details>
+        <details>
+          <summary>What hole size do I need for 2 oz craft paint bottles?</summary>
+          <p>The presets use about 1.35 in (34 mm) holes with 1.75 in spacing for 2 oz bottles like Apple Barrel, FolkArt and DecoArt Americana. Bottles vary slightly, so measure yours with calipers and adjust if needed.</p>
+        </details>
+        <details>
+          <summary>What software can open the SVG file?</summary>
+          <p>Any program that imports SVG, including LightBurn, Inkscape, Glowforge, xTool Creative Space, LaserGRBL, Adobe Illustrator and most CNC CAM software. The file is saved at real-world size in millimeters.</p>
+        </details>
+        <details>
+          <summary>What material thickness should I enter?</summary>
+          <p>Measure your actual sheet and enter that number. Plywood sold as 3 mm or 1/4 inch is often thinner than its label, and the tabs and slots need to match the real thickness to fit.</p>
+        </details>
+      </section>
+
+      <footer class="site-footer">
+        <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Back to the generator</a>
+      </footer>
+    </article>
+
     <script type="module" src="./js/script.js"></script>
+    <script>
+      // Analytics events. They do nothing until the Google tag above is switched on.
+      function track(name, params) {
+        if (typeof gtag === "function") gtag("event", name, params);
+      }
+      // Every Amazon click: preset preview, scrolling strips and the materials list.
+      document.addEventListener("click", function (e) {
+        var a = e.target.closest && e.target.closest('a[href*="amzn.to"], a[href*="amazon.com"]');
+        if (a) track("affiliate_click", { product: a.dataset.product || (a.textContent || "").trim().slice(0, 80) });
+        var p = e.target.closest && e.target.closest(".preset-item");
+        if (p) track("preset_select", { preset: p.getAttribute("aria-label") });
+      });
+      document.querySelector(".form").addEventListener("submit", function () {
+        var unit = document.getElementById("type").checked ? "mm" : "in";
+        track("svg_download", {
+          hole: document.getElementById("hd").value,
+          spacing: document.getElementById("sp").value,
+          columns: document.getElementById("hor").value,
+          rows: document.getElementById("vert").value,
+          unit: unit,
+        });
+      });
+      document.addEventListener("click", function (e) {
+        var c = e.target.closest && e.target.closest(".share-chip, .share-trigger");
+        if (c) track("share", { method: c.id || "share_button" });
+      });
+    </script>
   </body>
 </html>
