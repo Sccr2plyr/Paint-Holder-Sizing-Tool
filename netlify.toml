@@ -1,0 +1,6 @@
+# Only Netlify reads this file. The Netlify copy of this site forwards to the Cloudflare Pages copy.
+[[redirects]]
+  from = "/*"
+  to = "https://paint-holder-sizing-tool.pages.dev/:splat"
+  status = 301
+  force = true
